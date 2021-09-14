@@ -73,7 +73,7 @@ Arguments:
 
 Example inference result (image credit: [Learning to surf](https://www.flickr.com/photos/fotologic/6038911779/in/photostream/)):
 
-![test_out](assests/test_out.jpg)
+![test_out](assests/test_pred.jpg)
 
 
 ## References
