@@ -23,21 +23,21 @@ This repo will only include top-down pose estimation models.
 
 COCO-val with detector AP of 56.4
 
-Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | AP<sup>M | AP<sup>L | Params <br><sup>(M) | GFLOPs | Weights
---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- 
-[PoseHRNet][hrnet] | HRNet-W32 | 256x192 | 74.4 | 90.5 | 81.9 | 70.8 | 81.0 | 29 | 7 | [pretrained][phrnetw32]\|[backbone][hrnetw32]
-| | HRNet-W48 | 256x192 | 75.1 | 90.6 | 82.2 | 71.5 | 81.8 | 64 | 15 | [pretrained][phrnetw48]\|[backbone][hrnetw48]
-[SimDR][simdr] | HRNet-W32 | 256x192 | 75.3 | - | - | - | - | 31 | 7 | -
-| | HRNet-W48 | 256x192 | 75.9 | - | - | - | - | 66 | 15 | -
+Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M) | GFLOPs | Weights
+--- | --- | --- | --- | --- | --- | --- | --- | --- 
+[PoseHRNet][hrnet] | HRNet-W32 | 256x192 | 74.4 | 90.5 | 81.9 | 29 | 7 | [pretrained][phrnetw32]\|[backbone][hrnetw32]
+| | HRNet-W48 | 256x192 | 75.1 | 90.6 | 82.2 | 64 | 15 | [pretrained][phrnetw48]\|[backbone][hrnetw48]
+[SimDR][simdr] | HRNet-W32 | 256x192 | 75.3 | - | - | 31 | 7 | -
+| | HRNet-W48 | 256x192 | 75.9 | - | - | 66 | 15 | -
 
 
 COCO-test-dev with detector AP of 60.9
 
-Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | AP<sup>M | AP<sup>L | Params <br><sup>(M) | GFLOPs | Weights
---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
-[RLEPose][rlepose] | HRNet-W48 | 384x288 | 75.7 | 92.3 | 82.9 | 72.3 | 81.3 | - | - | -
-[SimDR*][simdr] | HRNet-W48 | 256x192 | 75.4 | 92.4 | 82.7 | 71.9 | 81.3 | 66 | 15 | -
-[PSA][psa] | PSA+HRNet-W48 | 256x192 | 78.9 | 93.6 | 85.8 | 76.1 | 83.6 | 70 | 16 | -
+Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M) | GFLOPs | Weights
+--- | --- | --- | --- | --- | --- | --- | --- | --- 
+[RLEPose][rlepose] | HRNet-W48 | 384x288 | 75.7 | 92.3 | 82.9 | - | - | -
+[SimDR*][simdr] | HRNet-W48 | 256x192 | 75.4 | 92.4 | 82.7 | 66 | 15 | -
+[PSA][psa] | PSA+HRNet-W48 | 256x192 | 78.9 | 93.6 | 85.8 | 70 | 16 | -
 
 ## Requirements
 
