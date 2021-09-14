@@ -6,8 +6,8 @@ from tqdm import tqdm
 from pathlib import Path
 from torchvision import transforms as T
 
-from pose.models import PoseHRNet
-from pose.utils.utils import letterbox, non_max_suppression, scale_boxes, get_final_preds, get_affine_transform, draw_keypoints, xyxy2xywh
+from pose.models import *
+from pose.utils.utils import letterbox, non_max_suppression, scale_boxes, get_final_preds, get_affine_transform, draw_keypoints, xyxy2xywh, get_simdr_final_preds
 from pose.utils.utils import VideoReader, VideoWriter, WebcamStream, FPS
 
 import sys
@@ -22,6 +22,14 @@ def get_pose_model(model_path):
         else:
             model_name = 'w48'
         model = PoseHRNet(model_name)
+    elif 'sasimdr' in model_path:
+        model = SimDR('w48')
+    elif 'simdr' in model_path:
+        if 'w32' in model_path:
+            model_name = 'w32'
+        else:
+            model_name = 'w48'
+        model = SimDR(model_name)
     else:
         raise NotImplementedError
     return model
@@ -42,6 +50,7 @@ class Pose:
         self.det_model = attempt_load(det_model, map_location=self.device)
         self.det_model = self.det_model.to(self.device)
 
+        self.model_name = pose_model
         self.pose_model = get_pose_model(pose_model)
         self.pose_model.load_state_dict(torch.load(pose_model, map_location='cpu'))
         self.pose_model = self.pose_model.to(self.device)
@@ -77,7 +86,7 @@ class Pose:
         boxes[:, 2:] *= 1.25
         return boxes
 
-    def extract_heatmaps(self, boxes, img):
+    def predict_poses(self, boxes, img):
         image_patches = []
         for cx, cy, w, h in boxes:
             trans = get_affine_transform(np.array([cx, cy]), np.array([w, h]), self.patch_size)
@@ -86,8 +95,7 @@ class Pose:
             image_patches.append(img_patch)
 
         image_patches = torch.stack(image_patches).to(self.device)
-        heatmaps = self.pose_model(image_patches).cpu().numpy()
-        return heatmaps
+        return self.pose_model(image_patches)
 
     def postprocess(self, pred, img1, img0):
         pred = non_max_suppression(pred, self.conf_thres, self.iou_thres, classes=0)
@@ -96,8 +104,13 @@ class Pose:
             if len(det):
                 boxes = scale_boxes(det[:, :4], img0.shape[:2], img1.shape[-2:]).cpu()
                 boxes = self.box_to_center_scale(boxes)
-                heatmaps = self.extract_heatmaps(boxes, img0)
-                coords = get_final_preds(heatmaps, boxes[:, :2].numpy(), boxes[:, 2:].numpy())
+                outputs = self.predict_poses(boxes, img0)
+
+                if 'simdr' in self.model_name:
+                    coords = get_simdr_final_preds(*outputs, boxes[:, :2].numpy(), boxes[:, 2:].numpy(), self.patch_size)
+                else:
+                    coords = get_final_preds(outputs.cpu().numpy(), boxes[:, :2].numpy(), boxes[:, 2:].numpy())
+
                 draw_keypoints(img0, coords, self.coco_skeletons)
 
     @torch.no_grad()

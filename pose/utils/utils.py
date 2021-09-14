@@ -5,6 +5,7 @@ import torch
 import time
 import os
 import math
+from torch import Tensor
 from torchvision import io, ops
 from threading import Thread
 from pathlib import Path
@@ -371,3 +372,20 @@ def get_affine_transform(center, scale, patch_size, rot=0, inv=0):
 
     return trans
 
+
+def get_simdr_final_preds(pred_x: Tensor, pred_y: Tensor, center, scale, image_size):
+    B, C, _ = pred_x.shape
+    pred_x, pred_y = pred_x.softmax(dim=2), pred_y.softmax(dim=2)
+    pred_x, pred_y = pred_x.max(dim=2, keepdim=True)[-1], pred_y.max(dim=2, keepdim=True)[-1]
+
+    coords = torch.ones(B, C, 2)
+    coords[:, :, 0] = torch.true_divide(pred_x, 2.0).squeeze()
+    coords[:, :, 1] = torch.true_divide(pred_y, 2.0).squeeze()
+
+    coords = coords.cpu().numpy()
+    preds = coords.copy()
+
+    for i in range(B):
+        preds[i] = transform_preds(coords[i], center[i], scale[i], image_size)
+    
+    return preds.astype(int)

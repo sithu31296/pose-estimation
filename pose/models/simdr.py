@@ -3,11 +3,13 @@ from torch import nn, Tensor
 from .backbones import HRNet
 
 
-class PoseHRNet(nn.Module):
-    def __init__(self, backbone: str = 'w32', num_joints: int = 17):
+class SimDR(nn.Module):
+    def __init__(self, backbone: str = 'w32', num_joints: int = 17, image_size: tuple = (256, 192)):
         super().__init__()
         self.backbone = HRNet(backbone)
         self.final_layer = nn.Conv2d(self.backbone.all_channels[0], num_joints, 1)
+        self.mlp_head_x = nn.Linear(3072, int(image_size[1] * 2.0))
+        self.mlp_head_y = nn.Linear(3072, int(image_size[0] * 2.0))
 
         self.apply(self._init_weights)
 
@@ -24,13 +26,16 @@ class PoseHRNet(nn.Module):
 
     def forward(self, x: Tensor) -> Tensor:
         out = self.backbone(x)
-        out = self.final_layer(out)
-        return out
+        out = self.final_layer(out).flatten(2)
+        pred_x = self.mlp_head_x(out)
+        pred_y = self.mlp_head_y(out)
+        return pred_x, pred_y
 
 
 if __name__ == '__main__':
-    model = PoseHRNet('w48')
-    model.load_state_dict(torch.load('checkpoints/pretrained/posehrnet_w48_256x192.pth', map_location='cpu'))
-    x = torch.randn(1, 3, 256, 192)
-    y = model(x)
-    print(y.shape)
+    from torch.nn import functional as F
+    model = SimDR('w32')
+    model.load_state_dict(torch.load('checkpoints/pretrained/simdr_hrnet_w32_256x192.pth', map_location='cpu'))
+    x = torch.randn(4, 3, 256, 192)
+    px, py = model(x)
+    print(px.shape, py.shape)

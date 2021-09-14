@@ -16,10 +16,14 @@ This repo will only include top-down pose estimation models.
 [psa]: https://arxiv.org/abs/2107.00782
 [rlepose]: https://arxiv.org/abs/2107.11291
 
-[phrnetw32]: https://drive.google.com/file/d/1os6T42ri4zsVPXwceli3J3KtksIaaGgu/view?usp=sharing
-[phrnetw48]: https://drive.google.com/file/d/1MbEjiXkV83Pm3G2o_Rni4j9CT_jRDSAQ/view?usp=sharing
 [hrnetw32]: https://drive.google.com/file/d/1YlPrQMZdNTMWIX3QJ5iKixN3qd0NCKFO/view?usp=sharing
 [hrnetw48]: https://drive.google.com/file/d/1hug4ptbf9Y125h9ZH72x4asY2lHt7NA6/view?usp=sharing
+
+[phrnetw32]: https://drive.google.com/file/d/1os6T42ri4zsVPXwceli3J3KtksIaaGgu/view?usp=sharing
+[phrnetw48]: https://drive.google.com/file/d/1MbEjiXkV83Pm3G2o_Rni4j9CT_jRDSAQ/view?usp=sharing
+[simdrw32]: https://drive.google.com/file/d/1Bd8h2H30tCN8WuLIhuSRF9ViN6zghj29/view?usp=sharing
+[simdrw48]: https://drive.google.com/file/d/1WU_9e0MxgrO8X4W6wKo16L8siCdwgLSZ/view?usp=sharing
+[sasimdrw48]: https://drive.google.com/file/d/1Tj9bGL7g7XRyL2F1a-uAcWhgYXnXpqBY/view?usp=sharing
 
 <details open>
   <summary><strong>COCO-val with 56.4 Detector AP</strong></summary>
@@ -28,8 +32,8 @@ Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M)
 --- | --- | --- | --- | --- | --- | --- | --- | --- 
 [PoseHRNet][hrnet] | HRNet-W32 | 256x192 | 74.4 | 90.5 | 81.9 | 29 | 7 | [pretrained][phrnetw32]\|[backbone][hrnetw32]
 | | HRNet-W48 | 256x192 | 75.1 | 90.6 | 82.2 | 64 | 15 | [pretrained][phrnetw48]\|[backbone][hrnetw48]
-[SimDR][simdr] | HRNet-W32 | 256x192 | 75.3 | - | - | 31 | 7 | -
-| | HRNet-W48 | 256x192 | 75.9 | - | - | 66 | 15 | -
+[SimDR][simdr] | HRNet-W32 | 256x192 | 75.3 | - | - | 31 | 7 | [pretrained][simdrw32]\|[backbone][hrnetw32]
+| | HRNet-W48 | 256x192 | 75.9 | 90.4 | 82.7 | 66 | 15 | [pretrained][simdrw48]\|[backbone][hrnetw48]
 
 </details>
 
@@ -38,8 +42,8 @@ Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M)
 
 Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M) | GFLOPs | Weights
 --- | --- | --- | --- | --- | --- | --- | --- | --- 
+[SimDR*][simdr] | HRNet-W48 | 256x192 | 75.4 | 92.4 | 82.7 | 66 | 15 | [pretrained][sasimdrw48]\|[backbone][hrnetw48]
 [RLEPose][rlepose] | HRNet-W48 | 384x288 | 75.7 | 92.3 | 82.9 | - | - | -
-[SimDR*][simdr] | HRNet-W48 | 256x192 | 75.4 | 92.4 | 82.7 | 66 | 15 | -
 [PSA][psa] | PSA+HRNet-W48 | 256x192 | 78.9 | 93.6 | 85.8 | 70 | 16 | -
 
 </details>
@@ -61,7 +65,7 @@ $ git clone --recursive https://github.com/sithu31296/pose-estimation.git
 ## Inference
 
 * Download a YOLOv5m trained on [CrowdHuman](https://www.crowdhuman.org/) dataset from [here](https://drive.google.com/file/d/1gglIwqxaH2iTvy6lZlXuAcMpd_U0GCUb/view?usp=sharing). (The weights are from [deepakcrk/yolov5-crowdhuman](https://github.com/deepakcrk/yolov5-crowdhuman).)
-* Download a pose estimation model from the tables.
+* Download a pose estimation model's weights from the tables.
 * Run the following command.
 
 ```bash
@@ -75,6 +79,8 @@ Arguments:
     * To test a folder containing images, set to folder name. (For example, `assests/`)
     * To test a video, set to video file path. (For example, `assests/video.mp4`)
     * To test with a webcam, set to `0`.
+* `det-model`: YOLOv5 model's weights path
+* `pose-model`: Pose estimation model's weights path
 
 Example inference results (image credit: [[1](https://www.flickr.com/photos/fotologic/6038911779/in/photostream/), [2](https://neuralet.com/article/pose-estimation-on-nvidia-jetson-platforms-using-openpifpaf/)]):
 
@@ -84,6 +90,7 @@ Example inference results (image credit: [[1](https://www.flickr.com/photos/foto
 ## References
 
 * https://github.com/leoxiaobin/deep-high-resolution-net.pytorch
+* https://github.com/ultralytics/yolov5
 
 ## Citations
 
@@ -96,4 +103,14 @@ Example inference results (image credit: [[1](https://www.flickr.com/photos/foto
   journal   = {TPAMI}
   year={2019}
 }
+
+@misc{li20212d,
+  title={Is 2D Heatmap Representation Even Necessary for Human Pose Estimation?}, 
+  author={Yanjie Li and Sen Yang and Shoukui Zhang and Zhicheng Wang and Wankou Yang and Shu-Tao Xia and Erjin Zhou},
+  year={2021},
+  eprint={2107.03332},
+  archivePrefix={arXiv},
+  primaryClass={cs.CV}
+}
+
 ```
