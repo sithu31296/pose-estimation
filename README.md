@@ -44,7 +44,7 @@ Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M)
 --- | --- | --- | --- | --- | --- | --- | --- | --- 
 [SimDR*][simdr] | HRNet-W48 | 256x192 | 75.4 | 92.4 | 82.7 | 66 | 15 | [pretrained][sasimdrw48]\|[backbone][hrnetw48]
 [RLEPose][rlepose] | HRNet-W48 | 384x288 | 75.7 | 92.3 | 82.9 | - | - | -
-[PSA][psa] | PSA+HRNet-W48 | 256x192 | 78.9 | 93.6 | 85.8 | 70 | 16 | -
+[UDP+PSA][psa] | HRNet-W48 | 256x192 | 78.9 | 93.6 | 85.8 | 70 | 16 | -
 
 </details>
 
