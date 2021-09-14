@@ -73,7 +73,7 @@ Arguments:
 
 Example inference results (image credit: [[1](https://www.flickr.com/photos/fotologic/6038911779/in/photostream/), [2](https://neuralet.com/article/pose-estimation-on-nvidia-jetson-platforms-using-openpifpaf/)]):
 
-![infer_result](assests/infer_result.jpg)
+![infer_result](assests/infer_results.jpg)
 
 
 ## References
