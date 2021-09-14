@@ -1,4 +1,4 @@
-# Multi-person Pose Estimation
+# Top-Down Multi-person Pose Estimation
 
 ## Introduction
 
@@ -7,68 +7,88 @@ Pose estimation find the keypoints belong to the people in the image. There are 
 * **Bottom-Up** first finds the keypoints and associates them into different people in the image. (Generally faster and lower accuracy)
 * **Top-Down** first detect people in the image and estimate the keypoints. (Generally computationally intensive but better accuracy)
 
-This repo will only incude top-down pose estimation models.
+This repo will only include top-down pose estimation models.
 
-## Features
+## Model Zoo
 
-Datasets
-* Body Keypoint
-    * 2D
-        * [COCO](https://cocodataset.org/#home)
-        * [MPII](http://human-pose.mpi-inf.mpg.de/)
-        * [MHP](https://lv-mhp.github.io/)
-        * [CrowdPose](https://github.com/Jeff-sjtu/CrowdPose) (Crowsed people)
-        * [OCHuman](https://github.com/liruilong940607/OCHumanApi) (Occluded people)
-    * 3D
-        * [Human3.6M](http://vision.imar.ro/human3.6m/description.php)
-    * Others
-        * [MPII-TRB](https://github.com/kennymckormick/Triplet-Representation-of-human-Body)
-        * [DeepFashion](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion/LandmarkDetection.html)
+[hrnet]: https://arxiv.org/abs/1908.07919
+[simdr]: http://arxiv.org/abs/2107.03332
+[psa]: https://arxiv.org/abs/2107.00782
+[rlepose]: https://arxiv.org/abs/2107.11291
 
-* Whole Body Keypoint (Body+Face+Hand+Feet)
-    * [COCO-WholeBody](https://github.com/jin-s13/COCO-WholeBody/)
-    * [Halpe](https://github.com/Fang-Haoshu/Halpe-FullBody)
+[phrnetw32]: https://drive.google.com/file/d/1os6T42ri4zsVPXwceli3J3KtksIaaGgu/view?usp=sharing
+[phrnetw48]: https://drive.google.com/file/d/1MbEjiXkV83Pm3G2o_Rni4j9CT_jRDSAQ/view?usp=sharing
+[hrnetw32]: https://drive.google.com/file/d/1YlPrQMZdNTMWIX3QJ5iKixN3qd0NCKFO/view?usp=sharing
+[hrnetw48]: https://drive.google.com/file/d/1hug4ptbf9Y125h9ZH72x4asY2lHt7NA6/view?usp=sharing
 
-* Face Keypoint
-    * [WFLW](https://wywu.github.io/projects/LAB/WFLW.html)
-    * [COFW](http://www.vision.caltech.edu/xpburgos/ICCV13/)
+COCO-val with detector AP of 56.4
 
-* Hand Keypoint
-    * [FreiHAND](https://lmb.informatik.uni-freiburg.de/projects/freihand/)
-    * [CMU Panoptic HandDB](http://domedb.perception.cs.cmu.edu/handdb.html)
-    * [InterHand2.6M](https://mks0601.github.io/InterHand2.6M/) (2D/3D)
-
-* Foot Keypoint
-    * [Human Foot Keypoint](https://cmu-perceptual-computing-lab.github.io/foot_keypoint_dataset/)
-
-* Animal Keypoint
-    * [Animal-Pose](https://sites.google.com/view/animal-pose/) (Dogs+Cats+Sheeps+Horses+Cows)
-    * [Horse-10](http://www.mackenziemathislab.org/horse10) (Only Horses)
-    * [MacaquePose](http://www.pri.kyoto-u.ac.jp/datasets/macaquepose/index.html) (Only Monkeys)
-    * [ATRW](https://cvwc2019.github.io/challenge.html) (Only Tigers)
-    * [DeepPoseKit-Zebra](https://github.com/jgraving/DeepPoseKit-Data/tree/master/datasets/zebra) (Only Zebras)
-    * [DeepPoseKit-Locust](https://github.com/jgraving/DeepPoseKit-Data/tree/master/datasets/locust) (Only Locusts)
-    * [DeepPoseKit-Fly](https://github.com/jgraving/DeepPoseKit-Data/tree/master/datasets/fly) (Only Flies)
-
-* Vehicle Keypoint
-    [Apollo Car Instance](http://apolloscape.auto/car_instance.html)
-
-Models
-
-* [RLEPose](https://arxiv.org/abs/2107.11291) [[Code](https://github.com/Jeff-sjtu/res-loglikelihood-regression)]
-* [PSA](https://arxiv.org/abs/2107.00782) [[Code](https://github.com/DeLightCMU/PSA)]
-* [SimDR](http://arxiv.org/abs/2107.03332) [[Code](https://github.com/leeyegy/SimDR)]
-* [HRNet](https://arxiv.org/abs/1908.07919) [[Code](https://github.com/leoxiaobin/deep-high-resolution-net.pytorch)]
+Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | AP<sup>M | AP<sup>L | Params <br><sup>(M) | GFLOPs | Weights
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- 
+[PoseHRNet][hrnet] | HRNet-W32 | 256x192 | 74.4 | 90.5 | 81.9 | 70.8 | 81.0 | 29 | 7 | [pretrained][phrnetw32]\|[backbone][hrnetw32]
+| | HRNet-W48 | 256x192 | 75.1 | 90.6 | 82.2 | 71.5 | 81.8 | 64 | 15 | [pretrained][phrnetw48]\|[backbone][hrnetw48]
+[SimDR][simdr] | HRNet-W32 | 256x192 | 75.3 | - | - | - | - | 31 | 7 | -
+| | HRNet-W48 | 256x192 | 75.9 | - | - | - | - | 66 | 15 | -
 
 
-## Models Comparison
+COCO-test-dev with detector AP of 60.9
 
-COCO-test-dev 
+Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | AP<sup>M | AP<sup>L | Params <br><sup>(M) | GFLOPs | Weights
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+[RLEPose][rlepose] | HRNet-W48 | 384x288 | 75.7 | 92.3 | 82.9 | 72.3 | 81.3 | - | - | -
+[SimDR*][simdr] | HRNet-W48 | 256x192 | 75.4 | 92.4 | 82.7 | 71.9 | 81.3 | 66 | 15 | -
+[PSA][psa] | PSA+HRNet-W48 | 256x192 | 78.9 | 93.6 | 85.8 | 76.1 | 83.6 | 70 | 16 | -
 
-Model | Backbone | Image Size | AP | AP50 | AP75 | APM | APL | Params (M) | GFLOPs (B)
---- | --- | --- | --- | --- | --- | --- | --- | --- | ---
-RLEPose | HRNet-W48 | - | 75.7 | 92.3 | 82.9 | 72.3 | 81.3 | - | -
-SimDR* | HRNet-W48 | 256x192 | 75.4 | 92.4 | 82.7 | 71.9 | 81.3 | 66.3 | 14.6
-PSA | HRNet-W48 | 256x192 | 78.9 | 93.6 | 85.8 | 76.1 | 83.6 | 70.1 | 15.7
-SimDR* | HRNet-W48 | 384x288 | 76.0 | 92.4 | 83.5 | 72.5 | 81.9 | 70.6 | 32.9
-PSA | HRNet-W48 | 384x288 | 79.5 | 93.6 | 85.9 | 76.3 | 84.3 | 70.1 | 35.4
+## Requirements
+
+* torch >= 1.8.1
+* torchvision >= 0.9.1
+
+Other requirements can be installed with `pip install -r requirements.txt`.
+
+Clone the repository recursively:
+
+```bash
+$ git clone --recursive https://github.com/sithu31296/pose-estimation.git
+```
+
+
+## Inference
+
+* Download a YOLOv5m trained on [CrowdHuman](https://www.crowdhuman.org/) dataset from [here](https://drive.google.com/file/d/1gglIwqxaH2iTvy6lZlXuAcMpd_U0GCUb/view?usp=sharing). (The weights are from [deepakcrk/yolov5-crowdhuman](https://github.com/deepakcrk/yolov5-crowdhuman).)
+* Download a pose estimation model from the tables.
+* Run the following command.
+
+```bash
+$ python infer.py --source TEST_SOURCE --det-model DET_MODEL_PATH --pose-model POSE_MODEL_PATH --img-size 640
+```
+
+Arguments:
+
+* `source`: Testing sources
+    * To test an image, set to image file path. (For example, `assests/test.jpg`)
+    * To test a folder containing images, set to folder name. (For example, `assests/`)
+    * To test a video, set to video file path. (For example, `assests/video.mp4`)
+    * To test with a webcam, set to `0`.
+
+Example inference result (image credit: [Learning to surf](https://www.flickr.com/photos/fotologic/6038911779/in/photostream/)):
+
+![test_out](assests/test_out.jpg)
+
+
+## References
+
+* https://github.com/leoxiaobin/deep-high-resolution-net.pytorch
+
+## Citations
+
+```
+@article{WangSCJDZLMTWLX19,
+  title={Deep High-Resolution Representation Learning for Visual Recognition},
+  author={Jingdong Wang and Ke Sun and Tianheng Cheng and 
+          Borui Jiang and Chaorui Deng and Yang Zhao and Dong Liu and Yadong Mu and 
+          Mingkui Tan and Xinggang Wang and Wenyu Liu and Bin Xiao},
+  journal   = {TPAMI}
+  year={2019}
+}
+```

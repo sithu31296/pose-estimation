@@ -1,5 +1,4 @@
 import torch
-import torch.nn.functional as F
 from torch import nn, Tensor
 
 
@@ -27,7 +26,7 @@ class BasicBlock(nn.Module):
         self.downsample = downsample
         self.stride = stride
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         identity = x
 
         out = self.relu(self.bn1(self.conv1(x)))
@@ -38,7 +37,6 @@ class BasicBlock(nn.Module):
 
         out += identity
         out = self.relu(out)
-
         return out
 
 
@@ -47,20 +45,20 @@ class Bottleneck(nn.Module):
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         super().__init__()
-        self.conv1 = nn.Conv2d(inplanes, planes, 1, 1, 0, bias=False)
+        self.conv1 = nn.Conv2d(inplanes, planes, 1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
 
         self.conv2 = nn.Conv2d(planes, planes, 3, stride, 1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
 
-        self.conv3 = nn.Conv2d(planes, planes*self.expansion, 1, 1, 0, bias=False)
+        self.conv3 = nn.Conv2d(planes, planes*self.expansion, 1, bias=False)
         self.bn3 = nn.BatchNorm2d(planes*self.expansion)
 
         self.relu = nn.ReLU(True)
         self.downsample = downsample
         self.stride = stride
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         identity = x
 
         out = self.relu(self.bn1(self.conv1(x)))
@@ -72,7 +70,6 @@ class Bottleneck(nn.Module):
 
         out += identity
         out = self.relu(out)
-
         return out
 
 
@@ -99,9 +96,9 @@ class HRModule(nn.Module):
                 if j > i:
                     fuse_layer.append(
                         nn.Sequential(
-                            nn.Conv2d(num_channels[j], num_channels[i], 1, 1, 0, bias=False),
+                            nn.Conv2d(num_channels[j], num_channels[i], 1, bias=False),
                             nn.BatchNorm2d(num_channels[i]),
-                            nn.Upsample(scale_factor=2**(j-i))
+                            nn.Upsample(scale_factor=2**(j-i), mode='nearest')
                         )
                     )
                 elif j == i:
@@ -123,7 +120,7 @@ class HRModule(nn.Module):
         
         return nn.ModuleList(fuse_layers)
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         for i, m in enumerate(self.branches):
             x[i] = m(x[i])
 
@@ -135,15 +132,13 @@ class HRModule(nn.Module):
             for j in range(1, self.num_branches):
                 y = y + x[j] if i == j else y + fm[j](x[j])
             x_fuse.append(self.relu(y))
-
         return x_fuse
 
 
 hrnet_settings = {
     "w18": [18, 36, 72, 144],
     "w32": [32, 64, 128, 256],
-    "w48": [48, 96, 192, 384],
-    "w64": [64, 128, 256, 512]
+    "w48": [48, 96, 192, 384]
 }
 
 
@@ -159,35 +154,31 @@ class HRNet(nn.Module):
         self.bn2 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(True)
 
-        all_channels = hrnet_settings[backbone]
+        self.all_channels = hrnet_settings[backbone]
 
         # Stage 1
         self.layer1 = self._make_layer(64, 64, 4)
         stage1_out_channel = Bottleneck.expansion * 64
 
         # Stage 2
-        stage2_channels = all_channels[:2]
+        stage2_channels = self.all_channels[:2]
         self.transition1 = self._make_transition_layer([stage1_out_channel], stage2_channels)
         self.stage2 = self._make_stage(1, 2, stage2_channels)
 
         # # Stage 3
-        stage3_channels = all_channels[:3]
+        stage3_channels = self.all_channels[:3]
         self.transition2 = self._make_transition_layer(stage2_channels, stage3_channels)
         self.stage3 = self._make_stage(4, 3, stage3_channels)
 
         # # Stage 4
-        self.transition3 = self._make_transition_layer(stage3_channels, all_channels)
-        self.stage4 = self._make_stage(3, 4, all_channels, ms_output=False)
-
-        self.pre_stage_channels = stage3_channels
-
+        self.transition3 = self._make_transition_layer(stage3_channels, self.all_channels)
+        self.stage4 = self._make_stage(3, 4, self.all_channels, ms_output=False)
 
     def _make_layer(self, inplanes, planes, blocks):
         downsample = None
-
         if inplanes != planes * Bottleneck.expansion:
             downsample = nn.Sequential(
-                nn.Conv2d(inplanes, planes*Bottleneck.expansion, 1, 1, 0, bias=False),
+                nn.Conv2d(inplanes, planes*Bottleneck.expansion, 1, bias=False),
                 nn.BatchNorm2d(planes*Bottleneck.expansion)
             )
 
@@ -237,7 +228,7 @@ class HRNet(nn.Module):
         return nn.Sequential(*modules)
 
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         x = self.relu(self.bn1(self.conv1(x)))
         x = self.relu(self.bn2(self.conv2(x)))
 
@@ -255,9 +246,12 @@ class HRNet(nn.Module):
         # # Stage 4
         x_list = [trans(y_list[-1]) if trans is not None else y_list[i] for i, trans in enumerate(self.transition3)]
         y_list = self.stage4(x_list)
-
         return y_list[0]
 
 
-
-
+if __name__ == '__main__':
+    model = HRNet('w32')
+    model.load_state_dict(torch.load('./checkpoints/backbone/hrnet_w32.pth', map_location='cpu'), strict=False)
+    x = torch.randn(1, 3, 224, 224)
+    y = model(x)
+    print(y.shape)

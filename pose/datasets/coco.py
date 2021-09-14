@@ -1,8 +1,8 @@
-from collections import defaultdict
 import torch
 import json
 import numpy as np
 from pathlib import Path
+from collections import defaultdict
 from torch.utils.data import Dataset, DataLoader
 from torchvision import io
 from torchvision import transforms as T
