@@ -71,9 +71,9 @@ Arguments:
     * To test a video, set to video file path. (For example, `assests/video.mp4`)
     * To test with a webcam, set to `0`.
 
-Example inference result (image credit: [Learning to surf](https://www.flickr.com/photos/fotologic/6038911779/in/photostream/)):
+Example inference results (image credit: [[1](https://www.flickr.com/photos/fotologic/6038911779/in/photostream/), [2](https://neuralet.com/article/pose-estimation-on-nvidia-jetson-platforms-using-openpifpaf/)]):
 
-![test_out](assests/test_pred.jpg)
+![infer_result](assests/infer_result.jpg)
 
 
 ## References
