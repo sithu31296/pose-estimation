@@ -21,7 +21,8 @@ This repo will only include top-down pose estimation models.
 [hrnetw32]: https://drive.google.com/file/d/1YlPrQMZdNTMWIX3QJ5iKixN3qd0NCKFO/view?usp=sharing
 [hrnetw48]: https://drive.google.com/file/d/1hug4ptbf9Y125h9ZH72x4asY2lHt7NA6/view?usp=sharing
 
-COCO-val with detector AP of 56.4
+<details open>
+  <summary><strong>COCO-val with 56.4 Detector AP</strong></summary>
 
 Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M) | GFLOPs | Weights
 --- | --- | --- | --- | --- | --- | --- | --- | --- 
@@ -30,14 +31,18 @@ Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M)
 [SimDR][simdr] | HRNet-W32 | 256x192 | 75.3 | - | - | 31 | 7 | -
 | | HRNet-W48 | 256x192 | 75.9 | - | - | 66 | 15 | -
 
+</details>
 
-COCO-test-dev with detector AP of 60.9
+<details>
+  <summary><strong>COCO-test with 60.9 Detector AP</strong> (click to expand)</summary>
 
 Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M) | GFLOPs | Weights
 --- | --- | --- | --- | --- | --- | --- | --- | --- 
 [RLEPose][rlepose] | HRNet-W48 | 384x288 | 75.7 | 92.3 | 82.9 | - | - | -
 [SimDR*][simdr] | HRNet-W48 | 256x192 | 75.4 | 92.4 | 82.7 | 66 | 15 | -
 [PSA][psa] | PSA+HRNet-W48 | 256x192 | 78.9 | 93.6 | 85.8 | 70 | 16 | -
+
+</details>
 
 ## Requirements
 
