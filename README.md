@@ -28,23 +28,36 @@ This repo will only include top-down pose estimation models.
 <details open>
   <summary><strong>COCO-val with 56.4 Detector AP</strong></summary>
 
-Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M) | GFLOPs | Weights
---- | --- | --- | --- | --- | --- | --- | --- | --- 
-[PoseHRNet][hrnet] | HRNet-W32 | 256x192 | 74.4 | 90.5 | 81.9 | 29 | 7 | [pretrained][phrnetw32]\|[backbone][hrnetw32]
-| | HRNet-W48 | 256x192 | 75.1 | 90.6 | 82.2 | 64 | 15 | [pretrained][phrnetw48]\|[backbone][hrnetw48]
-[SimDR][simdr] | HRNet-W32 | 256x192 | 75.3 | - | - | 31 | 7 | [pretrained][simdrw32]\|[backbone][hrnetw32]
-| | HRNet-W48 | 256x192 | 75.9 | 90.4 | 82.7 | 66 | 15 | [pretrained][simdrw48]\|[backbone][hrnetw48]
+Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M) | FLOPs <br><sup>(B) | FPS | Weights
+--- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+[PoseHRNet][hrnet] | HRNet-w32 | 256x192 | 74.4 | 90.5 | 81.9 | 29 | 7 | 25 | [download][phrnetw32]
+| | HRNet-w48 | 256x192 | 75.1 | 90.6 | 82.2 | 64 | 15 | 24 | [download][phrnetw48]
+[SimDR][simdr] | HRNet-w32 | 256x192 | 75.3 | - | - | 31 | 7 | 24 | [download][simdrw32]
+| | HRNet-w48 | 256x192 | 75.9 | 90.4 | 82.7 | 66 | 15 | 23 | [download][simdrw48]
 
 </details>
+
+> Note: FPS is tested on a GTX1660ti with one person per frame including pre-processing, model inference and post-processing. Both detection and pose models are in PyTorch FP32.
 
 <details>
   <summary><strong>COCO-test with 60.9 Detector AP</strong> (click to expand)</summary>
 
-Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M) | GFLOPs | Weights
+Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M) | FLOPs <br><sup>(B) | Weights
 --- | --- | --- | --- | --- | --- | --- | --- | --- 
-[SimDR*][simdr] | HRNet-W48 | 256x192 | 75.4 | 92.4 | 82.7 | 66 | 15 | [pretrained][sasimdrw48]\|[backbone][hrnetw48]
-[RLEPose][rlepose] | HRNet-W48 | 384x288 | 75.7 | 92.3 | 82.9 | - | - | -
-[UDP+PSA][psa] | HRNet-W48 | 256x192 | 78.9 | 93.6 | 85.8 | 70 | 16 | -
+[SimDR*][simdr] | HRNet-w48 | 256x192 | 75.4 | 92.4 | 82.7 | 66 | 15 | [download][sasimdrw48]
+[RLEPose][rlepose] | HRNet-w48 | 384x288 | 75.7 | 92.3 | 82.9 | - | - | -
+[UDP+PSA][psa] | HRNet-w48 | 256x192 | 78.9 | 93.6 | 85.8 | 70 | 16 | -
+
+</details>
+
+<br>
+<details>
+  <summary><strong>Download Backbone Models' Weights</strong> (click to expand)</summary>
+
+Model | Weights
+--- | ---
+HRNet-w32 | [download][hrnetw32]
+HRNet-w48 | [download][hrnetw48]
 
 </details>
 
