@@ -161,10 +161,15 @@ if __name__ == '__main__':
     elif source.is_file() and source.suffix in ['.mp4', '.avi']:
         reader = VideoReader(args.source)
         writer = VideoWriter(f"{args.source.rsplit('.', maxsplit=1)[0]}_out.mp4", reader.fps)
+        fps = FPS(avg=100)
 
         for frame in tqdm(reader):
+            fps.start()
             output = pose.predict(frame.numpy())
+            fps.stop(False)
             writer.update(output)
+        
+        print(f"FPS: {fps.fps}")
         writer.write()
 
     else:
