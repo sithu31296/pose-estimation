@@ -107,7 +107,6 @@ class WebcamStream:
         return self.frame.copy()
 
     def stop(self):
-        self.cap.release()
         cv2.destroyAllWindows()
         raise StopIteration
 
