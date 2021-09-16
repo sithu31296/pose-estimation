@@ -161,7 +161,7 @@ if __name__ == '__main__':
     elif source.is_file() and source.suffix in ['.mp4', '.avi']:
         reader = VideoReader(args.source)
         writer = VideoWriter(f"{args.source.rsplit('.', maxsplit=1)[0]}_out.mp4", reader.fps)
-        fps = FPS(avg=100)
+        fps = FPS(len(reader.frames))
 
         for frame in tqdm(reader):
             fps.start()
