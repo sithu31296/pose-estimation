@@ -6,33 +6,15 @@ from tqdm import tqdm
 from pathlib import Path
 from torchvision import transforms as T
 
-from pose.models import *
-from pose.utils.utils import letterbox, non_max_suppression, scale_boxes, get_final_preds, get_affine_transform, draw_keypoints, xyxy2xywh, get_simdr_final_preds
+from pose.models import get_pose_model
+from pose.utils.boxes import letterbox, scale_boxes, non_max_suppression, xyxy2xywh
+from pose.utils.decode import get_final_preds, get_simdr_final_preds
+from pose.utils.utils import setup_cudnn, get_affine_transform, draw_keypoints
 from pose.utils.utils import VideoReader, VideoWriter, WebcamStream, FPS
 
 import sys
 sys.path.insert(0, 'yolov5')
 from yolov5.models.experimental import attempt_load
-
-
-def get_pose_model(model_path):
-    if 'posehrnet' in model_path:
-        if 'w32' in model_path:
-            model_name = 'w32'
-        else:
-            model_name = 'w48'
-        model = PoseHRNet(model_name)
-    elif 'sasimdr' in model_path:
-        model = SimDR('w48')
-    elif 'simdr' in model_path:
-        if 'w32' in model_path:
-            model_name = 'w32'
-        else:
-            model_name = 'w48'
-        model = SimDR(model_name)
-    else:
-        raise NotImplementedError
-    return model
 
 
 class Pose:
@@ -133,6 +115,7 @@ def argument_parser():
 
 
 if __name__ == '__main__':
+    setup_cudnn()
     args = argument_parser()
     pose = Pose(
         args.det_model,
