@@ -2,27 +2,20 @@ import math
 import torch
 import numpy as np
 from torch import Tensor
-from .utils import get_affine_transform
 
 
 def get_simdr_final_preds(pred_x: Tensor, pred_y: Tensor, center, scale, image_size):
-    B, C, _ = pred_x.shape
     pred_x, pred_y = pred_x.softmax(dim=2), pred_y.softmax(dim=2)
     pred_x, pred_y = pred_x.max(dim=2)[-1], pred_y.max(dim=2)[-1]
+    coords = torch.stack([pred_x / 2, pred_y / 2], dim=-1)
 
-    coords = torch.ones(B, C, 2)
-    coords[:, :, 0] = pred_x / 2
-    coords[:, :, 1] = pred_y / 2
-
-    coords = coords.cpu().numpy()
-    preds = coords.copy()
-
-    for i in range(B):
-        preds[i] = transform_preds(coords[i], center[i], scale[i], image_size)
-    return preds.astype(int)
+    for i in range(coords.shape[0]):
+        coords[i] = transform_preds_tensor(coords[i], center[i], scale[i], image_size)
+    return coords.to(int).cpu().numpy()
 
 
 def get_final_preds(heatmaps, center, scale):
+    heatmaps = heatmaps.cpu().numpy()
     B, C, H, W = heatmaps.shape
     coords = get_max_preds(heatmaps)
 
@@ -58,15 +51,21 @@ def get_max_preds(heatmaps: np.ndarray):
     return preds
 
 
-def transform_preds(coords, center, scale, output_size):
-    target_coords = np.zeros(coords.shape)
-    trans = get_affine_transform(center, scale, output_size, inv=True)
-    for p in range(coords.shape[0]):
-        target_coords[p, :2] = affine_transform(coords[p, :2], trans)
+def transform_preds_tensor(coords, center, scale, output_size):
+    scale = scale * 200
+    scale_x = scale[0] / output_size[0]
+    scale_y = scale[1] / output_size[1]
+    target_coords = torch.ones_like(coords, device=coords.device)
+    target_coords[:, 0] = coords[:, 0] * scale_x + center[0] - scale[0] * 0.5
+    target_coords[:, 1] = coords[:, 1] * scale_y + center[1] - scale[1] * 0.5
     return target_coords
 
 
-def affine_transform(pt, t):
-    new_pt = np.array([pt[0], pt[1], 1.]).T
-    new_pt = np.dot(t, new_pt)
-    return new_pt
+def transform_preds(coords, center, scale, output_size):
+    scale = scale * 200
+    scale_x = scale[0] / output_size[0]
+    scale_y = scale[1] / output_size[1]
+    target_coords = np.ones_like(coords)
+    target_coords[:, 0] = coords[:, 0] * scale_x + center[0] - scale[0] * 0.5
+    target_coords[:, 1] = coords[:, 1] * scale_y + center[1] - scale[1] * 0.5
+    return target_coords

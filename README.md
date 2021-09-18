@@ -32,8 +32,8 @@ Model | Backbone | Image Size | AP | AP<sup>50 | AP<sup>75 | Params <br><sup>(M)
 --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
 [PoseHRNet][hrnet] | HRNet-w32 | 256x192 | 74.4 | 90.5 | 81.9 | 29 | 7 | 25 | [download][phrnetw32]
 | | HRNet-w48 | 256x192 | 75.1 | 90.6 | 82.2 | 64 | 15 | 24 | [download][phrnetw48]
-[SimDR][simdr] | HRNet-w32 | 256x192 | 75.3 | - | - | 31 | 7 | 24 | [download][simdrw32]
-| | HRNet-w48 | 256x192 | 75.9 | 90.4 | 82.7 | 66 | 15 | 23 | [download][simdrw48]
+[SimDR][simdr] | HRNet-w32 | 256x192 | 75.3 | - | - | 31 | 7 | 25 | [download][simdrw32]
+| | HRNet-w48 | 256x192 | 75.9 | 90.4 | 82.7 | 66 | 15 | 24 | [download][simdrw48]
 
 </details>
 

@@ -84,14 +84,14 @@ class Pose:
 
         for det in pred:
             if len(det):
-                boxes = scale_boxes(det[:, :4], img0.shape[:2], img1.shape[-2:]).cpu()
+                boxes = scale_boxes(det[:, :4], img0.shape[:2], img1.shape[-2:])
                 boxes = self.box_to_center_scale(boxes)
                 outputs = self.predict_poses(boxes, img0)
 
                 if 'simdr' in self.model_name:
-                    coords = get_simdr_final_preds(*outputs, boxes[:, :2].numpy(), boxes[:, 2:].numpy(), self.patch_size)
+                    coords = get_simdr_final_preds(*outputs, boxes[:, :2], boxes[:, 2:], self.patch_size)
                 else:
-                    coords = get_final_preds(outputs.cpu().numpy(), boxes[:, :2].numpy(), boxes[:, 2:].numpy())
+                    coords = get_final_preds(outputs, boxes[:, :2].cpu().numpy(), boxes[:, 2:].cpu().numpy())
 
                 draw_keypoints(img0, coords, self.coco_skeletons)
 
@@ -107,7 +107,7 @@ def argument_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--source', type=str, default='assests/test.jpg')
     parser.add_argument('--det-model', type=str, default='checkpoints/crowdhuman_yolov5m.pt')
-    parser.add_argument('--pose-model', type=str, default='checkpoints/pretrained/posehrnet_w32_256x192.pth')
+    parser.add_argument('--pose-model', type=str, default='checkpoints/pretrained/simdr_hrnet_w32_256x192.pth')
     parser.add_argument('--img-size', type=int, default=640)
     parser.add_argument('--conf-thres', type=float, default=0.4)
     parser.add_argument('--iou-thres', type=float, default=0.5)
