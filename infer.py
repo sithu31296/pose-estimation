@@ -84,14 +84,14 @@ class Pose:
 
         for det in pred:
             if len(det):
-                boxes = scale_boxes(det[:, :4], img0.shape[:2], img1.shape[-2:])
+                boxes = scale_boxes(det[:, :4], img0.shape[:2], img1.shape[-2:]).cpu()
                 boxes = self.box_to_center_scale(boxes)
                 outputs = self.predict_poses(boxes, img0)
 
                 if 'simdr' in self.model_name:
-                    coords = get_simdr_final_preds(*outputs, boxes[:, :2], boxes[:, 2:], self.patch_size)
+                    coords = get_simdr_final_preds(*outputs, boxes, self.patch_size)
                 else:
-                    coords = get_final_preds(outputs, boxes[:, :2].cpu().numpy(), boxes[:, 2:].cpu().numpy())
+                    coords = get_final_preds(outputs, boxes)
 
                 draw_keypoints(img0, coords, self.coco_skeletons)
 
